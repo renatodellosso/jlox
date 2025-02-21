@@ -94,9 +94,9 @@ class Scanner {
 
             case '/':
                 if (match('/')) {
-                    // Skip the rest of the line
-                    while (peek() != '\n' && !isAtEnd())
-                        advance();
+                    comment();
+                } else if (match('*')) {
+                    blockComment();
                 } else {
                     addToken(TokenType.SLASH);
                 }
@@ -231,5 +231,25 @@ class Scanner {
             type = TokenType.IDENTIFIER;
 
         addToken(type);
+    }
+
+    private void comment() {
+        // Skip the rest of the line
+        while (peek() != '\n' && !isAtEnd())
+            advance();
+    }
+
+    private void blockComment() {
+        while (peek() != '*' && peekNext() != '/' && !isAtEnd())
+            advance();
+
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated multiline comment.");
+            return;
+        }
+
+        // Consume the */
+        advance();
+        advance();
     }
 }
