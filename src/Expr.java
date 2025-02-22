@@ -2,10 +2,31 @@ import java.util.List;
 
 abstract class Expr {
 	interface Visitor<R> {
+		R visitTrinaryExpr(Trinary expr);
 		R visitBinaryExpr(Binary expr);
 		R visitGroupingExpr(Grouping expr);
 		R visitLiteralExpr(Literal expr);
 		R visitUnaryExpr(Unary expr);
+	}
+
+	static class Trinary extends Expr {
+		final Expr firstExpr;
+		final Token firstOperator;
+		final Expr secondExpr;
+		final Token secondOperator;
+		final Expr thirdExpr;
+		Trinary(Expr firstExpr, Token firstOperator, Expr secondExpr, Token secondOperator, Expr thirdExpr) {
+			this.firstExpr = firstExpr;
+			this.firstOperator = firstOperator;
+			this.secondExpr = secondExpr;
+			this.secondOperator = secondOperator;
+			this.thirdExpr = thirdExpr;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitTrinaryExpr(this);
+		}
 	}
 
 	static class Binary extends Expr {

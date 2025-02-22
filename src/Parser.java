@@ -73,11 +73,30 @@ class Parser {
     private Expr unary() {
         if (match(TokenType.BANG, TokenType.MINUS)) {
             Token operator = previous();
-            Expr right = unary();
+            Expr right = trinary();
             return new Expr.Unary(operator, right);
         }
 
-        return primary();
+        return trinary();
+    }
+
+    private Expr trinary() {
+        Expr expr = primary();
+
+        if (match(TokenType.QUESTION_MARK)) {
+            Token firstOperator = previous();
+            Expr middle = trinary();
+
+            if (!match(TokenType.COLON))
+               throw error(previous(), "Expect ':' after true branch of a ternary.");
+
+            Token secondOperator = previous();
+            Expr right = trinary();
+
+            expr = new Expr.Trinary(expr, firstOperator, middle, secondOperator, right);
+        }
+
+        return expr;
     }
 
     private Expr primary() {
