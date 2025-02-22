@@ -49,7 +49,7 @@ class Parser {
     private Expr term() {
         Expr expr = factor();
 
-        while (match(TokenType.MINUS, TokenType.PLUS)) {
+        while (match(TokenType.MINUS, TokenType.PLUS, TokenType.COMMA)) {
             Token operator = previous();
             Expr right = term();
             expr = new Expr.Binary(expr, operator, right);
