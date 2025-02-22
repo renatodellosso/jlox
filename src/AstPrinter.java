@@ -1,4 +1,8 @@
 class AstPrinter implements Expr.Visitor<String> {
+    String print(Expr expr) {
+        return expr.accept(this);
+    }
+
     private String parenthesize(String name, Expr... exprs) {
         StringBuilder builder = new StringBuilder();
 
