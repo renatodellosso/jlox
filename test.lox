@@ -1,11 +1,10 @@
-var a = 1;
-var b = 1;
-var c = a + b;
-print c;
+var a;
+var b;
+a = b = 1;
 
-{
-    var a = 2;
-    var b = 2;
-    var d = a + b + c;
-    print d;
+for (var i = 0; i < 21; i = i + 1) {
+    print a + b;
+    var tmp = b;
+    b = b + a;
+    a = tmp;
 }
