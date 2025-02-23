@@ -14,7 +14,7 @@ class Parser {
         try {
             return expression();
         } catch (ParseError error) {
-            return  null;
+            return null;
         }
     }
 
@@ -97,7 +97,25 @@ class Parser {
             return new Expr.Grouping(expr);
         }
 
-        throw error(peek(), "Expect expression.");
+        throw noPrimary();
+    }
+
+    private ParseError noPrimary() {
+        Token token = advance();
+
+        switch (token.type) {
+            case TokenType.GREATER:
+            case TokenType.GREATER_EQUAL:
+            case TokenType.LESS:
+            case TokenType.LESS_EQUAL:
+            case TokenType.PLUS:
+            case TokenType.MINUS:
+            case TokenType.STAR:
+            case TokenType.SLASH:
+                return error(token, "Expect expression before " + token.lexeme + ".");
+            default:
+                return error(token, "Expect expression.");
+        }
     }
 
     private boolean match(TokenType... allowedTypes) {
