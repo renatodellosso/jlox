@@ -54,10 +54,10 @@ class Scanner {
             case ')':
                 addToken(TokenType.RIGHT_PAREN);
                 break;
-            case '[':
+            case '{':
                 addToken(TokenType.LEFT_BRACE);
                 break;
-            case ']':
+            case '}':
                 addToken(TokenType.RIGHT_BRACE);
                 break;
             case ',':
