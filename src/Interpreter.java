@@ -80,6 +80,8 @@ public class Interpreter implements Expr.Visitor<Object> {
                 return (double) left * (double) right;
             case TokenType.SLASH:
                 checkNumberOperands(expr.operator, left, right);
+                if ((double) right == 0)
+                    throw new RuntimeError(expr.operator, "Cannot divide by 0.");
                 return (double) left / (double) right;
 
             case TokenType.GREATER:
