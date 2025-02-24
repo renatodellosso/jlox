@@ -1,10 +1,13 @@
-var a;
-var b;
-a = b = 1;
+fun makeCounter() {
+  var i = 0;
+  fun count() {
+    i = i + 1;
+    print i;
+  }
 
-for (var i = 0; i < 21; i = i + 1) {
-    print a + b;
-    var tmp = b;
-    b = b + a;
-    a = tmp;
+  return count;
 }
+
+var counter = makeCounter();
+counter(); // "1".
+counter(); // "2".

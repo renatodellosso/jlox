@@ -28,7 +28,7 @@ class Environment {
             return;
         }
 
-        throw new RuntimeError(name, "Undefined variable '" + name.lexeme + '.');
+        throw new RuntimeError(name, "Undefined variable '" + name.lexeme + ".");
     }
 
     Object get(Token name) {
