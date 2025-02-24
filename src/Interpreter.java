@@ -5,6 +5,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = new Environment();
 
     private boolean breakLoop;
+    private boolean continueLoop;
 
     void interpret(List<Stmt> statements) {
         try {
@@ -26,9 +27,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             this.environment = environment;
 
             for (Stmt statement : statements) {
+
                 execute(statement);
 
-                if (breakLoop)
+                if (breakLoop || continueLoop)
                     break;
             }
         } finally {
@@ -227,6 +229,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitWhileStmt(Stmt.While stmt) {
         breakLoop = false;
         while (isTruthy(evaluate(stmt.condition))) {
+            continueLoop = false;
             execute(stmt.body);
 
             if (breakLoop)
@@ -238,6 +241,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitBreakStmt(Stmt.Break stmt) {
         breakLoop = true;
+        return null;
+    }
+
+    @Override
+    public Void visitContinueStmt(Stmt.Continue stmt) {
+        continueLoop = true;
         return null;
     }
 }
