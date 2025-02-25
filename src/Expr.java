@@ -114,9 +114,9 @@ abstract class Expr {
 	}
 
 	static class Function extends Expr {
+		final String name;
 		final List<Token> params;
 		final List<Stmt> body;
-		final String name;
 		Function(String name, List<Token> params, List<Stmt> body) {
 			this.name = name;
 			this.params = params;
