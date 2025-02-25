@@ -24,7 +24,7 @@ class Parser {
     private Stmt declaration() {
         try {
             if (match(TokenType.FUN))
-                return function("function");
+                return functionDeclaration("function");
             if (match(TokenType.VAR))
                 return varDeclaration();
 
@@ -35,26 +35,12 @@ class Parser {
         }
     }
 
-    private Stmt.Function function(String kind) {
+    private Stmt.Var functionDeclaration(String kind) {
         Token name = consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
 
-        consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
+        Expr function = function(name.lexeme);
 
-        List<Token> parameters = new ArrayList<>();
-        if (!check(TokenType.RIGHT_PAREN)) {
-            do {
-                if (parameters.size() >= 255)
-                    error(peek(), "Can't have more than 255 parameters.");
-
-                parameters.add(consume(TokenType.IDENTIFIER, "Expect parameter name."));
-            } while (match(TokenType.COMMA));
-        }
-
-        consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters");
-
-        consume(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.");
-        List<Stmt> body = block();
-        return new Stmt.Function(name, parameters, body);
+        return new Stmt.Var(name, function);
     }
 
     private Stmt varDeclaration() {
@@ -324,6 +310,9 @@ class Parser {
         if (match(TokenType.IDENTIFIER))
             return new Expr.Variable(previous());
 
+        if (match(TokenType.FUN))
+            return function("[unnamed lambda]");
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
@@ -331,6 +320,27 @@ class Parser {
         }
 
         throw error(peek(), "Expect expression.");
+    }
+
+    private Expr function(String name) {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after function name.");
+
+        List<Token> parameters = new ArrayList<>();
+        if (!check(TokenType.RIGHT_PAREN)) {
+            do {
+                if (parameters.size() >= 255)
+                    error(peek(), "Can't have more than 255 parameters.");
+
+                parameters.add(consume(TokenType.IDENTIFIER, "Expect parameter name."));
+            } while (match(TokenType.COMMA));
+        }
+
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters");
+
+        consume(TokenType.LEFT_BRACE, "Expect '{' before function body.");
+        List<Stmt> body = block();
+
+        return new Expr.Function(name, parameters, body);
     }
 
     private boolean match(TokenType... allowedTypes) {

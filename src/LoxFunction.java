@@ -1,10 +1,10 @@
 import java.util.List;
 
 public class LoxFunction implements LoxCallable {
-    private final Stmt.Function declaration;
+    private final Expr.Function declaration;
     private final Environment closure;
 
-    LoxFunction(Stmt.Function declaration, Environment closure) {
+    LoxFunction(Expr.Function declaration, Environment closure) {
         this.declaration = declaration;
         this.closure = closure;
     }
@@ -30,6 +30,6 @@ public class LoxFunction implements LoxCallable {
 
     @Override
     public String toString() {
-        return "<fn " + declaration.name.lexeme + ">";
+        return "<fn " + declaration.name + ">";
     }
 }
