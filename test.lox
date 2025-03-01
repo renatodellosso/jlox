@@ -1,5 +1,6 @@
+var b = 2;
 fun t() {
-    var a = "hello world";
+    var a = b;
 
     print a;
 }
