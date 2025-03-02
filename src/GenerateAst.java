@@ -14,14 +14,14 @@ public class GenerateAst {
         String outputDir = args[0];
 
         defineAst(outputDir, "Expr", Arrays.asList(
-                "Assign : Token name, Expr value",
+                "Assign : Token name, Expr value, Integer depth, Integer index",
                 "Binary : Expr left, Token operator, Expr right",
                 "Call : Expr callee, Token paren, List<Expr> arguments",
                 "Grouping : Expr expression",
                 "Literal : Object value",
                 "Logical : Expr left, Token operator, Expr right",
                 "Unary : Token operator, Expr right",
-                "Variable : Token name"
+                "Variable : Token name, Integer depth, Integer index"
         ));
 
         defineAst(outputDir, "Stmt", Arrays.asList(
@@ -67,7 +67,7 @@ public class GenerateAst {
 
         // Fields
         for (String field : fields) {
-            writer.println("\t\tfinal " + field + ";");
+            writer.println("\t\t" + field + ";");
         }
 
         // Constructor

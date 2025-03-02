@@ -61,7 +61,7 @@ public class Lox {
             return;
 
         Resolver resolver = new Resolver(interpreter);
-        resolver.resolve(statements);
+        resolver.runResolver(statements);
 
         if (hadError)
             return;

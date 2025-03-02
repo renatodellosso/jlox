@@ -13,11 +13,15 @@ abstract class Expr {
 	}
 
 	static class Assign extends Expr {
-		final Token name;
-		final Expr value;
-		Assign(Token name, Expr value) {
+		Token name;
+		Expr value;
+		Integer depth;
+		Integer index;
+		Assign(Token name, Expr value, Integer depth, Integer index) {
 			this.name = name;
 			this.value = value;
+			this.depth = depth;
+			this.index = index;
 		}
 
 		@Override
@@ -27,9 +31,9 @@ abstract class Expr {
 	}
 
 	static class Binary extends Expr {
-		final Expr left;
-		final Token operator;
-		final Expr right;
+		Expr left;
+		Token operator;
+		Expr right;
 		Binary(Expr left, Token operator, Expr right) {
 			this.left = left;
 			this.operator = operator;
@@ -43,9 +47,9 @@ abstract class Expr {
 	}
 
 	static class Call extends Expr {
-		final Expr callee;
-		final Token paren;
-		final List<Expr> arguments;
+		Expr callee;
+		Token paren;
+		List<Expr> arguments;
 		Call(Expr callee, Token paren, List<Expr> arguments) {
 			this.callee = callee;
 			this.paren = paren;
@@ -59,7 +63,7 @@ abstract class Expr {
 	}
 
 	static class Grouping extends Expr {
-		final Expr expression;
+		Expr expression;
 		Grouping(Expr expression) {
 			this.expression = expression;
 		}
@@ -71,7 +75,7 @@ abstract class Expr {
 	}
 
 	static class Literal extends Expr {
-		final Object value;
+		Object value;
 		Literal(Object value) {
 			this.value = value;
 		}
@@ -83,9 +87,9 @@ abstract class Expr {
 	}
 
 	static class Logical extends Expr {
-		final Expr left;
-		final Token operator;
-		final Expr right;
+		Expr left;
+		Token operator;
+		Expr right;
 		Logical(Expr left, Token operator, Expr right) {
 			this.left = left;
 			this.operator = operator;
@@ -99,8 +103,8 @@ abstract class Expr {
 	}
 
 	static class Unary extends Expr {
-		final Token operator;
-		final Expr right;
+		Token operator;
+		Expr right;
 		Unary(Token operator, Expr right) {
 			this.operator = operator;
 			this.right = right;
@@ -113,9 +117,13 @@ abstract class Expr {
 	}
 
 	static class Variable extends Expr {
-		final Token name;
-		Variable(Token name) {
+		Token name;
+		Integer depth;
+		Integer index;
+		Variable(Token name, Integer depth, Integer index) {
 			this.name = name;
+			this.depth = depth;
+			this.index = index;
 		}
 
 		@Override

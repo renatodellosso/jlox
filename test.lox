@@ -1,3 +1,6 @@
+var b = 2;
+print b;
+
 fun t() {
     var a = "hello world";
 
@@ -5,3 +8,4 @@ fun t() {
 }
 
 t();
+print "after t";

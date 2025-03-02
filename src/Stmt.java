@@ -13,7 +13,7 @@ abstract class Stmt {
 	}
 
 	static class Block extends Stmt {
-		final List<Stmt> statements;
+		List<Stmt> statements;
 		Block(List<Stmt> statements) {
 			this.statements = statements;
 		}
@@ -25,7 +25,7 @@ abstract class Stmt {
 	}
 
 	static class Expression extends Stmt {
-		final Expr expression;
+		Expr expression;
 		Expression(Expr expression) {
 			this.expression = expression;
 		}
@@ -37,9 +37,9 @@ abstract class Stmt {
 	}
 
 	static class Function extends Stmt {
-		final Token name;
-		final List<Token> params;
-		final List<Stmt> body;
+		Token name;
+		List<Token> params;
+		List<Stmt> body;
 		Function(Token name, List<Token> params, List<Stmt> body) {
 			this.name = name;
 			this.params = params;
@@ -53,9 +53,9 @@ abstract class Stmt {
 	}
 
 	static class If extends Stmt {
-		final Expr condition;
-		final Stmt thenBranch;
-		final Stmt elseBranch;
+		Expr condition;
+		Stmt thenBranch;
+		Stmt elseBranch;
 		If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
 			this.condition = condition;
 			this.thenBranch = thenBranch;
@@ -69,7 +69,7 @@ abstract class Stmt {
 	}
 
 	static class Print extends Stmt {
-		final Expr expression;
+		Expr expression;
 		Print(Expr expression) {
 			this.expression = expression;
 		}
@@ -81,8 +81,8 @@ abstract class Stmt {
 	}
 
 	static class Return extends Stmt {
-		final Token keyword;
-		final Expr value;
+		Token keyword;
+		Expr value;
 		Return(Token keyword, Expr value) {
 			this.keyword = keyword;
 			this.value = value;
@@ -95,8 +95,8 @@ abstract class Stmt {
 	}
 
 	static class Var extends Stmt {
-		final Token name;
-		final Expr initializer;
+		Token name;
+		Expr initializer;
 		Var(Token name, Expr initializer) {
 			this.name = name;
 			this.initializer = initializer;
@@ -109,8 +109,8 @@ abstract class Stmt {
 	}
 
 	static class While extends Stmt {
-		final Expr condition;
-		final Stmt body;
+		Expr condition;
+		Stmt body;
 		While(Expr condition, Stmt body) {
 			this.condition = condition;
 			this.body = body;
