@@ -1,7 +1,12 @@
-fun t() {
-    var a = "hello world";
-
-    print a;
+class Test {
+    init(x) {
+        this.x = x;
+        return;
+    }
+    method() {
+        print this.x;
+    }
 }
 
-t();
+var test = Test(1);
+test.method();

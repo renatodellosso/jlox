@@ -28,7 +28,7 @@ class Environment {
             return;
         }
 
-        throw new RuntimeError(name, "Undefined variable '" + name.lexeme + ".");
+        throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
     }
 
     void assignAt(int distance, Token name, Object value) {

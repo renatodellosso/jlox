@@ -23,6 +23,8 @@ class Parser {
 
     private Stmt declaration() {
         try {
+            if (match(TokenType.CLASS))
+                return classDeclaration();
             if (match(TokenType.FUN))
                 return function("function");
             if (match(TokenType.VAR))
@@ -33,6 +35,19 @@ class Parser {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt classDeclaration() {
+        Token name = consume(TokenType.IDENTIFIER, "Expect class name.");
+        consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
+
+        List<Stmt.Function> methods = new ArrayList<>();
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd())
+            methods.add(function("methood"));
+
+        consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
+
+        return new Stmt.Class(name, methods);
     }
 
     private Stmt.Function function(String kind) {
@@ -193,6 +208,8 @@ class Parser {
             if (expr instanceof Expr.Variable) {
                 Token name = ((Expr.Variable)expr).name;
                 return new Expr.Assign(name, value);
+            } else if (expr instanceof Expr.Get get) {
+                return new Expr.Set(get.object, get.name, value);
             }
 
             error(equals, "Invalid assignment target.");
@@ -289,6 +306,10 @@ class Parser {
         while (true) {
             if (match(TokenType.LEFT_PAREN))
                 expr = finishCall(expr);
+            else if (match(TokenType.DOT)) {
+                Token name = consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
+                expr = new Expr.Get(expr, name);
+            }
             else break;
         }
 
@@ -320,6 +341,9 @@ class Parser {
 
         if (match(TokenType.NUMBER, TokenType.STRING))
             return new Expr.Literal(previous().literal);
+
+        if (match(TokenType.THIS))
+            return new Expr.This(previous());
 
         if (match(TokenType.IDENTIFIER))
             return new Expr.Variable(previous());
