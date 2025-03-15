@@ -14,7 +14,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     enum ClassType {
         NONE,
-        CLASS
+        CLASS,
+        SUBCLASS
     }
 
     private final Interpreter interpreter;
@@ -24,7 +25,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private final Stack<Map<String, Boolean>> scopes = new Stack<>();
 
     private FunctionType currentFunction = FunctionType.NONE;
-    private ClassType currentClass = ClassType.CLASS;
+    private ClassType currentClass = ClassType.NONE;
 
     Resolver(Interpreter interpreter) {
         this.interpreter = interpreter;
@@ -153,6 +154,16 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitSuperExpr(Expr.Super expr) {
+        if (currentClass == ClassType.NONE)
+            Lox.error(expr.keyword, "Can't use 'super' outside a class.");
+        else if (currentClass == ClassType.CLASS)
+            Lox.error(expr.keyword, "Can't use 'super' in a class without a superclass.");
+        resolveLocal(expr, expr.keyword);
+        return null;
+    }
+
+    @Override
     public Void visitThisExpr(Expr.This expr) {
         if (currentClass == ClassType.NONE) {
             Lox.error(expr.keyword, "Can't use 'this' outside a class.");
@@ -195,6 +206,19 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         declare(stmt.name);
         define(stmt.name);
 
+        if (stmt.superclass != null) {
+            currentClass = ClassType.SUBCLASS;
+
+            // Check if class extends itself
+            if (stmt.name.lexeme.equals(stmt.superclass.name.lexeme))
+                Lox.error(stmt.superclass.name, "A class can't inherit from itself.");
+
+            resolve(stmt.superclass);
+
+            beginScope();
+            scopes.peek().put("super", true);
+        }
+
         beginScope();
         scopes.peek().put("this", true);
 
@@ -205,6 +229,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             resolveFunction(method, declaration);
         }
 
+        if (stmt.superclass != null)
+            endScope();
         endScope();
         currentClass = enclosingClass;
 

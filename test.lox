@@ -1,4 +1,4 @@
-class Test {
+class Super {
     init(x) {
         this.x = x;
         return;
@@ -8,5 +8,11 @@ class Test {
     }
 }
 
-var test = Test(1);
+class Sub < Super {
+    method() {
+        super.method();
+        print "y";
+    }
+}
+var test = Sub(1);
 test.method();
