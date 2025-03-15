@@ -6,7 +6,15 @@ class Test {
     method() {
         print this.x;
     }
+    static s() {
+        print "static";
+    }
 }
 
 var test = Test(1);
 test.method();
+
+Test.y = "2";
+print Test.y;
+
+Test.s();

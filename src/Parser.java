@@ -26,7 +26,7 @@ class Parser {
             if (match(TokenType.CLASS))
                 return classDeclaration();
             if (match(TokenType.FUN))
-                return function("function");
+                return function("function", false);
             if (match(TokenType.VAR))
                 return varDeclaration();
 
@@ -42,15 +42,16 @@ class Parser {
         consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
 
         List<Stmt.Function> methods = new ArrayList<>();
-        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd())
-            methods.add(function("methood"));
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
+            methods.add(function("method", match(TokenType.STATIC)));
+        }
 
         consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
 
         return new Stmt.Class(name, methods);
     }
 
-    private Stmt.Function function(String kind) {
+    private Stmt.Function function(String kind, boolean isStatic) {
         Token name = consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
 
         consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
@@ -69,7 +70,7 @@ class Parser {
 
         consume(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.");
         List<Stmt> body = block();
-        return new Stmt.Function(name, parameters, body);
+        return new Stmt.Function(name, parameters, body, isStatic);
     }
 
     private Stmt varDeclaration() {

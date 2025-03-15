@@ -1,13 +1,18 @@
 import java.util.List;
 import java.util.Map;
 
-public class LoxClass implements LoxCallable {
+public class LoxClass extends LoxInstance implements LoxCallable {
     final String name;
     final Map<String, LoxFunction> methods;
 
-    LoxClass(String name, Map<String, LoxFunction> methods) {
+    LoxClass(String name, Map<String, LoxFunction> methods, Map<Token, LoxFunction> staticMethods) {
+        super(null);
         this.name = name;
         this.methods = methods;
+
+        for (Map.Entry<Token, LoxFunction> method : staticMethods.entrySet()) {
+            set(method.getKey(), method.getValue());
+        }
     }
 
     @Override
