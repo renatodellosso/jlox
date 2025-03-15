@@ -6,7 +6,18 @@ class Test {
     method() {
         print this.x;
     }
+    g {
+        return "g";
+    }
+    s(x) {
+       this.x = x;
+    }
 }
 
 var test = Test(1);
 test.method();
+
+print test.g;
+
+test.s = "y";
+print test.x;

@@ -55,10 +55,12 @@ abstract class Stmt {
 		final Token name;
 		final List<Token> params;
 		final List<Stmt> body;
-		Function(Token name, List<Token> params, List<Stmt> body) {
+		final LoxFunction.Variant variant;
+		Function(Token name, List<Token> params, List<Stmt> body, LoxFunction.Variant variant) {
 			this.name = name;
 			this.params = params;
 			this.body = body;
+			this.variant = variant;
 		}
 
 		@Override

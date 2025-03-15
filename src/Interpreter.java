@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
@@ -202,7 +199,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitGetExpr(Expr.Get expr) {
         Object object = evaluate(expr.object);
         if (object instanceof LoxInstance) {
-            return ((LoxInstance) object).get(expr.name);
+            return ((LoxInstance) object).get(expr.name, this);
         }
 
         throw new RuntimeError(expr.name, "Only instances have properties.");
@@ -238,8 +235,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (!(object instanceof LoxInstance))
             throw new RuntimeError(expr.name, "Only instances have fields.");
 
+        Object currentVal = ((LoxInstance) object).getIfPresent(expr.name, this);
+        boolean isSetter = currentVal instanceof LoxFunction fun && fun.arity() == 1;
+
         Object value = evaluate(expr.value);
-        ((LoxInstance)object).set(expr.name, value);
+
+        if (isSetter)
+            ((LoxFunction) currentVal).call(this, Collections.singletonList(value));
+        else ((LoxInstance)object).set(expr.name, value);
         return value;
     }
 
@@ -282,7 +285,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Map<String, LoxFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
             LoxFunction function = new LoxFunction(method, environment,
-                    method.name.lexeme.equals("init"));
+                    method.variant);
             methods.put(method.name.lexeme, function);
         }
 
@@ -299,7 +302,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-        LoxFunction function = new LoxFunction(stmt, environment, false);
+        LoxFunction function = new LoxFunction(stmt, environment, stmt.variant);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
