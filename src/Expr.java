@@ -134,9 +134,11 @@ abstract class Expr {
 
 	static class Super extends Expr {
 		final Token keyword;
+		final Token superclass;
 		final Token method;
-		Super(Token keyword, Token method) {
+		Super(Token keyword, Token superclass, Token method) {
 			this.keyword = keyword;
+			this.superclass = superclass;
 			this.method = method;
 		}
 

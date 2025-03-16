@@ -1,18 +1,30 @@
-class Super {
-    init(x) {
-        this.x = x;
-        return;
-    }
-    method() {
-        print this.x;
+class A {
+    a() {
+        print "a in A";
     }
 }
 
-class Sub < Super {
-    method() {
-        super.method();
-        print "y";
+class B < A {
+    a() {
+        super.A.a();
+        print "a in B";
     }
 }
-var test = Sub(1);
-test.method();
+
+class C < A {
+    a() {
+        super.A.a();
+        print "a in C";
+    }
+}
+
+class D < B, C {
+    a() {
+        super.B.a();
+        super.C.a();
+        print "a in D";
+    }
+}
+
+var d = D();
+d.a();

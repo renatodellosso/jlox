@@ -40,21 +40,23 @@ class Parser {
     private Stmt classDeclaration() {
         Token name = consume(TokenType.IDENTIFIER, "Expect class name.");
 
-        Expr.Variable superclass = null;
+        List<Expr.Variable> superclasses = new ArrayList<>();
         if (match(TokenType.LESS)) {
-            consume(TokenType.IDENTIFIER, "Expect superclass name.");
-            superclass = new Expr.Variable(previous());
+            do {
+                consume(TokenType.IDENTIFIER, "Expect superclass name.");
+                superclasses.add(new Expr.Variable(previous()));
+            } while (match(TokenType.COMMA));
         }
 
         consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
 
         List<Stmt.Function> methods = new ArrayList<>();
         while (!check(TokenType.RIGHT_BRACE) && !isAtEnd())
-            methods.add(function("methood"));
+            methods.add(function("method"));
 
         consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
 
-        return new Stmt.Class(name, superclass, methods);
+        return new Stmt.Class(name, superclasses, methods);
     }
 
     private Stmt.Function function(String kind) {
@@ -352,8 +354,12 @@ class Parser {
         if (match(TokenType.SUPER)) {
             Token keyword = previous();
             consume(TokenType.DOT, "Expect '.' after 'super'.");
+
+            Token superclass = consume(TokenType.IDENTIFIER, "Expect superclass name after '.'");
+            consume(TokenType.DOT, "Expect '.' after superclass name.");
+
             Token method = consume(TokenType.IDENTIFIER, "Expect superclass method name.");
-            return new Expr.Super(keyword, method);
+            return new Expr.Super(keyword, superclass, method);
         }
 
         if (match(TokenType.THIS))

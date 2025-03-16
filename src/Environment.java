@@ -58,4 +58,8 @@ class Environment {
 
         return environment;
     }
+
+    public String toString() {
+        return "Environment: " + values;
+    }
 }
